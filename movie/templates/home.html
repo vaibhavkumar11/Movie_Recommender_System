@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="mx-auto" role="group" aria-label="First group">
+                <button type="button" class="btn btn-outline-danger collapsed"data-toggle="collapse" data-target="#topRated" aria-expanded="false" aria-controls="topRated">New Releases</button>
+                <button type="button" class="btn btn-outline-danger collapsed" data-toggle="collapse" data-target="#topRated" aria-expanded="false" aria-controls="topRated">Top Rated</button>
+                <button type="button" class="btn btn-outline-danger"data-toggle="collapse" data-target="#topRated" aria-expanded="true" aria-controls="topRated">Coming Soon</button>
+            </div>
+        </div>
+    </div>
+    <div class="collapse show" id="topRated">
+        <div class="row mt-4">
+            {% for movie in movies %}
+                <div class=" col-md-3 col-sm-6">
+                    <img src={{ movie.thumb }} alt="Movie 1" class="img-thumbnail">
+                    <h5>{{ movie.title }}</h5>
+                    <p>{{ movie.year }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+{% endblock content %}
