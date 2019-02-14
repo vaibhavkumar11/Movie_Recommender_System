@@ -1,5 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
+    <div class="jumbotron jumbotron-fluid mb-0 pb-4">
+        <div class="container">
+          <h1 class="display-3" style="font-weight:700"><a href="{{ url_for('rate') }}" style="color:black">Movie Recommender</a></h1>
+          <p class="lead" style="font-weight:400">Get Movie Recommendations based on your ratings.</p>
+        </div>
+    </div>
     <div class="row">
         <div class="col btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
             <div class="mx-auto" role="group" aria-label="First group">

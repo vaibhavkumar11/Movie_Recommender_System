@@ -1,8 +1,8 @@
-from flask import render_template,url_for, flash, redirect, session
-import numpy as np
+from flask import render_template,url_for, flash, redirect, session, request
 from movie.forms import RegistrationForm, LoginForm
-from werkzeug.security import generate_password_hash, check_password_hash
-from movie import app, mongo, bcrypt
+from movie import app, db, bcrypt, mongo
+from movie.models import User
+from flask_login import login_user, current_user, logout_user, login_required
 
 
 @app.route("/")
@@ -15,12 +15,10 @@ def home():
 def about():
     return render_template('rate.html')
 
-@app.route('/pred')
-def pred():
-    return render_template('pred.html')
-
 @app.route('/register', methods=['GET',  'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = RegistrationForm()
     users = mongo.db.users
     if form.validate_on_submit():
@@ -33,11 +31,25 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash(f'You have been logged in', 'success')
-            return redirect(url_for('home'))
+        user = User.objects(email = form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember = form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful', 'danger')
     return render_template('login.html', title="Login", form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+@app.route('/rate')
+@login_required
+def rate():
+    return render_template('rate.html', title='Rate-Movies')
