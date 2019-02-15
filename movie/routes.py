@@ -2,14 +2,17 @@ from flask import render_template,url_for, flash, redirect, session, request
 from movie.forms import RegistrationForm, LoginForm
 from movie import app, db, bcrypt, mongo
 from movie.models import User
+from bson import ObjectId
 from flask_login import login_user, current_user, logout_user, login_required
 
 
 @app.route("/")
 @app.route('/home')
 def home():
-    movies = mongo.db.movies.find()
-    return render_template('home.html', title='Home', movies=movies[:20])
+    topRated = mongo.db.movies.aggregate([ { '$sample': { 'size': 12 } } ])
+    newReleases = mongo.db.movies.aggregate([ { '$sample': { 'size': 12 } } ])
+    comingSoon = mongo.db.movies.aggregate([ { '$sample': { 'size': 12 } } ])
+    return render_template('home.html', title='Home', topRated=topRated, newReleases=newReleases, comingSoon=comingSoon)
 
 @app.route("/about")
 def about():
@@ -20,11 +23,9 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = RegistrationForm()
-    users = mongo.db.users
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        users.insert({'username':form.username.data, 'email':form.email.data, 'password':hashed_password})
-        session['username'] = form.username.data
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password).save()
         flash(f'Account created for {form.username.data}!You will be able to login', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title="Register", form=form)
@@ -49,7 +50,17 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route('/rate')
+@app.route('/rate', methods=['GET', 'POST'])
 @login_required
 def rate():
-    return render_template('rate.html', title='Rate-Movies')
+    movies = mongo.db.movies.find().sort([("movieId", 1)])
+    if request.method == 'POST':
+        # user = current_user.get_id()
+        movie = request.form.get('movie_id')
+        rating = request.form.get('rating')
+        # user = User.objects(pk=current_user.get_id()).first()
+        mongo.db.users.update({ "_id": ObjectId(current_user.get_id())},
+        { "$set": { 'ratings.'+str(movie) : int(rating)}})
+        
+        flash(f'Movie {movie} Rated {rating}', 'success')
+    return render_template('rate.html', title='Rate-Movies', movies=movies[:5])

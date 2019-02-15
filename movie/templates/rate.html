@@ -1,4 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>{{ current_user.username }}</h1>
+    <div class="jumbotron jumbotron-fluid pb-4 my-0">
+        <div class="container">
+            <h1 class="display-3" style="font-weight:700">Rate the movies</h1>
+            <p class="lead" style="font-weight:400">Rate some of the movies and get recommendations.</p>
+        </div>
+    </div>
+    {% for movie in movies %}
+        <div class="content-section">
+            <div class="media">
+                <img class="rounded-circle account-img" src="{{ movie.thumb }}">
+                <div class="media-body">
+                    <div>
+                        <h5 class="account-heading" style="display:inline">{{ movie.title }} ({{movie.year}})</h5>
+                        <span class="float-right mt-2" role="group" aria-label="Basic example">
+                            <form action="" method="post">
+                                <input type="hidden" value="{{ movie.mov_index }}" name="movie_id" />
+                                <input type="submit" name='rating' value='1' class="btn btn-outline-primary">
+                                <input type="submit" name='rating' value='2' class="btn btn-outline-primary">
+                                <input type="submit" name='rating' value='3' class="btn btn-outline-primary">
+                                <input type="submit" name='rating' value='4' class="btn btn-outline-primary">
+                                <input type="submit" name='rating' value='5' class="btn btn-outline-primary">
+                            </form>
+                        </span>
+                    </div>
+                    <p class="text-secondary">{{ movie.plot }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock content %}
