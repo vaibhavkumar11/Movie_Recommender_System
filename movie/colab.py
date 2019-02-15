@@ -23,4 +23,4 @@ def predictions(gen_ratings):
     user_pred = predict(ratings, user_similarity, kind='user')
     item_similarity = similarity(0, ratings, kind='item')
     item_pred = predict(gen_ratings, item_similarity, kind='item')
-    return ind[np.argsort(user_pred[0])[:-21:-1]], ind[np.argsort(item_pred[0])[:-21:-1]]    
+    return ind[np.argsort(user_pred[0])[:-21:-1]], ind[np.argsort(item_pred[0][ind])[:-21:-1]]    
