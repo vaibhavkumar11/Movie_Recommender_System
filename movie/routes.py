@@ -53,14 +53,14 @@ def logout():
 @app.route('/rate', methods=['GET', 'POST'])
 @login_required
 def rate():
-    movies = mongo.db.movies.find().sort([("movieId", 1)])
+    movies = mongo.db.movies.aggregate([ { '$sample': { 'size': 50 } } ])
     if request.method == 'POST':
         movie = request.form.get('movie_id')
         rating = request.form.get('rating')
         mongo.db.users.update({ "_id": ObjectId(current_user.get_id())},
         { "$set": { 'ratings.'+str(movie) : int(rating)}})
         flash(f'Movie {movie} Rated {rating}', 'success')
-    return render_template('rate.html', title='Rate-Movies', movies=movies[:50])
+    return render_template('rate.html', title='Rate-Movies', movies=movies)
 
 @app.route('/pred', methods=['GET', 'POST'])
 @login_required
