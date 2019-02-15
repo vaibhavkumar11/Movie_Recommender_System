@@ -15,7 +15,7 @@ def predict(ratings, similarity, kind='user'):
         return ratings.dot(similarity) / np.array([np.abs(similarity).sum(axis=1)])
 
 def predictions(gen_ratings):
-    file = './movie/ratings.npy'
+    file = './movie/data/ratings.npy'
     ratings = np.load(file)
     gen_ratings = np.array(gen_ratings).reshape((1, 206))
     ind = np.where(gen_ratings == 0)[1]

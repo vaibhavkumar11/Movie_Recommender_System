@@ -2,8 +2,9 @@
 {% block content %}
     <div class="jumbotron jumbotron-fluid pb-4 my-0">
         <div class="container">
-            <h1 class="display-3" style="font-weight:700">Predicted movies</h1>
-            <p class="lead" style="font-weight:400">Top 10 movies on your ratings</p>
+            <h1 class="display-3" style="font-weight:700">Recommended Movies</h1>
+            <p class="lead" style="font-weight:500">Top 10 movies on your ratings</p>
+            <p class="lead">Open and Close button's to see individual recommendations</p>
         </div>
     </div>
     <div class="row">
@@ -11,6 +12,7 @@
             <div class="mx-auto" role="group" aria-label="First group">
                 <button type="button" class="btn btn-outline-danger collapsed"data-toggle="collapse" data-target="#user" aria-expanded="false" aria-controls="user">User-User</button>
                 <button type="button" class="btn btn-outline-danger collapsed" data-toggle="collapse" data-target="#item" aria-expanded="false" aria-controls="item">Item-Item</button>
+                <button type="button" class="btn btn-outline-danger collapsed" data-toggle="collapse" data-target="#matrix" aria-expanded="false" aria-controls="matrix">Matrix</button>
             </div>
         </div>
     </div>
@@ -34,6 +36,18 @@
                     <img src={{ movie.thumb }} alt="Movie 1" class="img-thumbnail">
                     <h5>{{ movie.title }}</h5>
                     <p>{{ movie.year }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="collapse" id="matrix" aria-labelledby="matrix">
+        <div class="row mt-4">
+            {% for key,value in movies_mat.iterrows() %}
+                <div class=" col-md-3 col-sm-6">
+                    <img src={{ value['thumb'] }} alt="Movie 1" class="img-thumbnail">
+                    <h5>{{ value['title'] }}</h5>
+                    <p>{{ value['year'] }}</p>
                 </div>
             {% endfor %}
         </div>

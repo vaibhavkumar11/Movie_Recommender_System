@@ -1,10 +1,10 @@
 from flask import render_template,url_for, flash, redirect, session, request
 from movie.forms import RegistrationForm, LoginForm
-from movie import app, db, bcrypt, mongo
+from movie import app, db, bcrypt, mongo, colab, matrix
 from movie.models import User
 from bson import ObjectId
 from flask_login import login_user, current_user, logout_user, login_required
-from movie import colab
+
 
 @app.route("/")
 @app.route('/home')
@@ -66,9 +66,13 @@ def rate():
 @login_required
 def pred():
     movies = mongo.db.users.find_one({"_id": ObjectId(current_user.get_id())})
+    
     pred_movies_ind_user, pred_movies_ind_item = colab.predictions(movies['ratings'])
     pred_movies_ind_user = pred_movies_ind_user.tolist()
     pred_movies_ind_item = pred_movies_ind_item.tolist()
     pred_movies_user = mongo.db.movies.find({ "mov_index": { "$in": pred_movies_ind_user } })
     pred_movies_item = mongo.db.movies.find({ "mov_index": { "$in": pred_movies_ind_item } })
-    return render_template('pred.html', title='Predicted-Movies', movies_user=pred_movies_user, movies_item=pred_movies_item)
+    
+    pred_movies_mat = matrix.predictions(movies['ratings'])
+
+    return render_template('pred.html', title='Predicted-Movies', movies_user=pred_movies_user, movies_item=pred_movies_item, movies_mat=pred_movies_mat)
