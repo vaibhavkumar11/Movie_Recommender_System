@@ -4,7 +4,7 @@ from movie import app, db, bcrypt, mongo
 from movie.models import User
 from bson import ObjectId
 from flask_login import login_user, current_user, logout_user, login_required
-
+from movie import user_colab
 
 @app.route("/")
 @app.route('/home')
@@ -55,12 +55,18 @@ def logout():
 def rate():
     movies = mongo.db.movies.find().sort([("movieId", 1)])
     if request.method == 'POST':
-        # user = current_user.get_id()
         movie = request.form.get('movie_id')
         rating = request.form.get('rating')
-        # user = User.objects(pk=current_user.get_id()).first()
         mongo.db.users.update({ "_id": ObjectId(current_user.get_id())},
         { "$set": { 'ratings.'+str(movie) : int(rating)}})
-        
         flash(f'Movie {movie} Rated {rating}', 'success')
     return render_template('rate.html', title='Rate-Movies', movies=movies[:5])
+
+@app.route('/pred', methods=['GET', 'POST'])
+@login_required
+def pred():
+    movies = mongo.db.users.find_one({"_id": ObjectId(current_user.get_id())})
+    pred_movies_ind = user_colab.predictions(movies['ratings'])
+    pred_movies_ind = pred_movies_ind.tolist()
+    pred_movies = mongo.db.movies.find({ "mov_index": { "$in": pred_movies_ind } })
+    return render_template('pred.html', title='Predicted-Movies', movies=pred_movies)
