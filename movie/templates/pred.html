@@ -6,13 +6,37 @@
             <p class="lead" style="font-weight:400">Top 10 movies on your ratings</p>
         </div>
     </div>
-    <div class="row mt-4">
-        {% for movie in movies %}
-            <div class=" col-md-3 col-sm-6">
-                <img src={{ movie.thumb }} alt="Movie 1" class="img-thumbnail">
-                <h5>{{ movie.title }}</h5>
-                <p>{{ movie.year }}</p>
+    <div class="row">
+        <div class="col btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="mx-auto" role="group" aria-label="First group">
+                <button type="button" class="btn btn-outline-danger collapsed"data-toggle="collapse" data-target="#user" aria-expanded="false" aria-controls="user">User-User</button>
+                <button type="button" class="btn btn-outline-danger collapsed" data-toggle="collapse" data-target="#item" aria-expanded="false" aria-controls="item">Item-Item</button>
             </div>
-        {% endfor %}
+        </div>
     </div>
+
+    <div class="collapse" id="user"aria-labelledby="user">
+        <div class="row mt-4">
+            {% for movie in movies_user %}
+                <div class=" col-md-3 col-sm-6">
+                    <img src={{ movie.thumb }} alt="Movie 1" class="img-thumbnail">
+                    <h5>{{ movie.title }}</h5>
+                    <p>{{ movie.year }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="collapse" id="item" aria-labelledby="item">
+        <div class="row mt-4">
+            {% for movie in movies_item %}
+                <div class=" col-md-3 col-sm-6">
+                    <img src={{ movie.thumb }} alt="Movie 1" class="img-thumbnail">
+                    <h5>{{ movie.title }}</h5>
+                    <p>{{ movie.year }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
 {% endblock content %}

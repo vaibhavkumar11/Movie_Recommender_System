@@ -4,7 +4,7 @@ from movie import app, db, bcrypt, mongo
 from movie.models import User
 from bson import ObjectId
 from flask_login import login_user, current_user, logout_user, login_required
-from movie import user_colab
+from movie import colab
 
 @app.route("/")
 @app.route('/home')
@@ -60,13 +60,15 @@ def rate():
         mongo.db.users.update({ "_id": ObjectId(current_user.get_id())},
         { "$set": { 'ratings.'+str(movie) : int(rating)}})
         flash(f'Movie {movie} Rated {rating}', 'success')
-    return render_template('rate.html', title='Rate-Movies', movies=movies[:5])
+    return render_template('rate.html', title='Rate-Movies', movies=movies[:50])
 
 @app.route('/pred', methods=['GET', 'POST'])
 @login_required
 def pred():
     movies = mongo.db.users.find_one({"_id": ObjectId(current_user.get_id())})
-    pred_movies_ind = user_colab.predictions(movies['ratings'])
-    pred_movies_ind = pred_movies_ind.tolist()
-    pred_movies = mongo.db.movies.find({ "mov_index": { "$in": pred_movies_ind } })
-    return render_template('pred.html', title='Predicted-Movies', movies=pred_movies)
+    pred_movies_ind_user, pred_movies_ind_item = colab.predictions(movies['ratings'])
+    pred_movies_ind_user = pred_movies_ind_user.tolist()
+    pred_movies_ind_item = pred_movies_ind_item.tolist()
+    pred_movies_user = mongo.db.movies.find({ "mov_index": { "$in": pred_movies_ind_user } })
+    pred_movies_item = mongo.db.movies.find({ "mov_index": { "$in": pred_movies_ind_item } })
+    return render_template('pred.html', title='Predicted-Movies', movies_user=pred_movies_user, movies_item=pred_movies_item)
