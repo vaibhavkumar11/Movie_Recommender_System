@@ -70,9 +70,7 @@ This will launch the server at:  [http://127.0.0.1:5000/](http://127.0.0.1:5000/
 
 #### Step 1 - Scrapping
 
-The **ml-latest** dataset from MovieLens was used to get user ratings. The dataset had alot of movies so I decided to make my own dataset by scrapping IMDB Top 250. Movie Name, DIrector, Year , Run Time
-
-, Stars, Rating, Plot were collected and the collection is in the **movie/data folder**.
+The **ml-latest** dataset from MovieLens was used to get user ratings. The dataset had alot of movies so I decided to make my own dataset by scrapping IMDB Top 250. Movie Name, DIrector, Year , Run Time, Stars, Rating, Plot were collected and the collection is in the **movie/data folder**.
 
 #### Step 2 - Recommending Algos
 
@@ -81,4 +79,25 @@ For recommendation, from the ml-latest only those users were used who had rated 
 Matrix Factorization was done in a similar way achieving 2.1 MSE(check recommending algos folder for code).
 
 #### Step 3 - Website
+
+For building the website, Flask was used in the Backend along with Bootstrap for the frontend. Flask-WTF build forms for user authentication and MongoDB Atlas was used to sotre the database online.
+
+The website has a package structure while allowed for refactoring code along with a better directory structure.
+
+#### Step 4 - Deployment
+
+The database was hosted on MongoDB all along so for hosting the website, heroku was chosen.
+
+To host a flask application on heroku, first gunicorn has to be installed and a requirements.txt had to be generated. Heroku CLI has to be setup and then a Procfile has to be created in the folder.
+
+```
+pip install gunicorn
+pip freeze > requirements.txt
+```
+
+Procfile:
+
+```
+web: gunicorn movie:app
+```
 
