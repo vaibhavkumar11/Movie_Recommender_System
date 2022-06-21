@@ -13,7 +13,7 @@ itsdangerous==1.1.0
 Jinja2==2.10
 MarkupSafe==1.1.0
 mongoengine==0.16.3
-numpy==1.16.1
+numpy==1.22.0
 pandas==0.24.1
 pycparser==2.19
 pymongo==3.7.2
